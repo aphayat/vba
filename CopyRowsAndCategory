@@ -1,0 +1,698 @@
+Sub Start()
+
+Dim SubProductAndWorkSheetName As Object
+Dim isMainSheet As Boolean
+
+
+    
+If (Sheet_Exists("Main")) Then
+    ' create sheets
+    createSheets
+    
+    ' prepare Dictionary
+    Set SubProductAndWorkSheetName = createDictionary()
+    'Debug.Print SubProductAndWorkSheetName.Item("2paintonly")(0)
+    
+    'Dim varItem As Variant
+    'For Each varItem In SubProductAndWorkSheetName("2paintonly")
+       'Debug.Print varItem
+    'Next
+    
+    'Start Categorized
+    Call CatergorizedSubLineProduct(SubProductAndWorkSheetName)
+    
+    'Wrap Text
+    'wrapText
+    
+ '  Worksheets("PRINTED").PageSetup.PaperSize = xlPaperLegal
+    Else
+    MsgBox ("Main Sheet is not found. Please make sure you have created Main sheet.")
+    
+End If
+
+End Sub
+Function wrapText()
+ Dim Current As Worksheet
+
+         ' Loop through all of the worksheets in the active workbook.
+         For Each Current In Worksheets
+         Worksheets(Current.Name).Range("B2:B999").wrapText = True
+         Next
+
+End Function
+
+Function copyHeader(sheet_Name As String)
+
+    Worksheets("Main").Rows(1).Copy
+    Worksheets(sheet_Name).Activate
+    Worksheets(sheet_Name).Cells(1, 1).Select
+    Worksheets(sheet_Name).Paste
+    
+    Worksheets(sheet_Name).Cells(2, 1) = sheet_Name
+    Worksheets(sheet_Name).Cells(2, 1).Font.Bold = True
+    
+    Worksheets(sheet_Name).Range("C:J").ColumnWidth = 12
+    Worksheets(sheet_Name).Range("A:A").ColumnWidth = 25
+    Worksheets(sheet_Name).Range("B:B").ColumnWidth = 65
+    Worksheets(sheet_Name).Range("H:H").ColumnWidth = 15
+    Worksheets(sheet_Name).Range("G:G").ColumnWidth = 30
+   
+    
+    'define formatting
+      'Dim rng As Range
+      Dim carpetCondition As FormatCondition
+      
+    
+     ' Set rng = Worksheets(sheet_Name).Range("B2")
+    
+     ' rng.FormatConditions.Delete
+    'Set condition1 = Worksheets(sheet_Name).Range("B2:B7").FormatConditions.Add(xlCellValue, xlGreater, "=80")
+      Set carpetCondition = Worksheets(sheet_Name).Range("B2:B999").FormatConditions.Add(UCase(xlTextString), TextOperator:=xlContains, String:=UCase("carpet"))
+      
+       'Defining and setting the format to be applied for each condition
+    With carpetCondition
+     .Font.Color = vbRed
+     
+     
+     '.Font.Bold = True
+    End With
+
+' end formating
+     Worksheets(sheet_Name).Range("B2:B999").wrapText = True
+    
+    Worksheets("Main").Activate
+    
+    Worksheets("Main").Rows(2).Copy
+    Worksheets(sheet_Name).Activate
+    Worksheets(sheet_Name).Cells(3, 1).Select
+    Worksheets(sheet_Name).Paste
+    Worksheets("Main").Activate
+
+End Function
+
+'this functin will create sheets
+Sub createSheets()
+'MsgBox (Worksheets.Count)
+
+If (Sheet_Exists("Drop Ship") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Drop Ship"
+copyHeader ("Drop Ship")
+End If
+
+If (Sheet_Exists("RUBBER") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "RUBBER"
+copyHeader ("RUBBER")
+End If
+
+If (Sheet_Exists("MESH") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "MESH"
+copyHeader ("MESH")
+End If
+
+If (Sheet_Exists("VINYL") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "VINYL"
+copyHeader ("VINYL")
+End If
+
+If (Sheet_Exists("MISC") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "MISC"
+copyHeader ("MISC")
+End If
+
+If (Sheet_Exists("CARTS") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "CARTS"
+copyHeader ("CARTS")
+End If
+
+If (Sheet_Exists("Faceshields") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Faceshields"
+copyHeader ("Faceshields")
+End If
+
+If (Sheet_Exists("SIGNS -ALUM") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SIGNS -ALUM"
+copyHeader ("SIGNS -ALUM")
+End If
+
+If (Sheet_Exists("SIGNS -PVC") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SIGNS -PVC"
+copyHeader ("SIGNS -PVC")
+End If
+
+If (Sheet_Exists("SIGNS -CORR") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SIGNS -CORR"
+copyHeader ("SIGNS -CORR")
+End If
+
+If (Sheet_Exists("Label") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Label"
+copyHeader ("Label")
+End If
+
+If (Sheet_Exists("Last Mark") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Last Mark"
+copyHeader ("Last Mark")
+End If
+
+If (Sheet_Exists("Low Profile") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Low Profile"
+copyHeader ("Low Profile")
+End If
+
+If (Sheet_Exists("Solid") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Solid"
+copyHeader ("Solid")
+End If
+
+If (Sheet_Exists("PRINTED") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "PRINTED"
+copyHeader ("PRINTED")
+End If
+
+If (Sheet_Exists("Freezer") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "Freezer"
+copyHeader ("Freezer")
+End If
+
+If (Sheet_Exists("STENCIL") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "STENCIL"
+copyHeader ("STENCIL")
+End If
+
+If (Sheet_Exists("POSTER") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "POSTER"
+copyHeader ("POSTER")
+End If
+
+If (Sheet_Exists("NO LAMINATE") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "NO LAMINATE"
+copyHeader ("NO LAMINATE")
+End If
+
+If (Sheet_Exists("CLICKER") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "CLICKER"
+copyHeader ("CLICKER")
+End If
+
+'CARPET
+If (Sheet_Exists("CARPET") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "CARPET"
+copyHeader ("CARPET")
+End If
+
+If (Sheet_Exists("SAMPLE") = False) Then
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = "SAMPLE"
+copyHeader ("SAMPLE")
+End If
+
+End Sub
+
+Function CatergorizedSubLineProduct(SubProductAndWorkSheetName As Object)
+
+totalrows = Worksheets("Main").Cells(Rows.Count, 1).End(xlUp).Row
+
+
+For i = 4 To totalrows
+
+'MsgBox ("Item***" & Worksheets("Main").Cells(i, 1).Value)
+   'Copy row data from Main sheet
+   Worksheets("Main").Rows(i).Copy
+   'MsgBox (Worksheets("Main").Cells(i, 8).Value)
+   
+   
+   Dim varItem As Variant
+   If Worksheets("Main").Cells(i, 8).Value <> "" Then
+        If SubProductAndWorkSheetName.Exists(UCase(Worksheets("Main").Cells(i, 8).Value)) Then
+            For Each varItem In SubProductAndWorkSheetName(UCase(Worksheets("Main").Cells(i, 8).Value))
+                Debug.Print varItem
+                        If varItem <> "" Then
+                            copyRowData (varItem)
+                        End If
+            Next
+         Else
+             Worksheets("Main").Range("A" & i & ":J" & i).Interior.ColorIndex = 7
+        End If
+   Else
+       If InStr(Worksheets("Main").Cells(i, 1).Value, "Total") <> 0 Then
+             If Worksheets("Main").Cells(i - 1, 8).Value <> "" Then
+                  If SubProductAndWorkSheetName.Exists(UCase(Worksheets("Main").Cells(i - 1, 8).Value)) Then
+                             For Each varItem In SubProductAndWorkSheetName(UCase(Worksheets("Main").Cells(i - 1, 8).Value))
+                             'Debug.Print varItem
+                                 If varItem <> "" Then
+                                    copyRowData (varItem)
+                                 End If
+                            Next
+                    Else
+                    Worksheets("Main").Range("A" & i & ":J" & i).Interior.ColorIndex = 7
+                    End If
+                    Else
+                    copyRowData ("Drop Ship")
+            End If
+            Else
+                copyRowData ("Drop Ship")
+       End If
+   End If
+   
+   Worksheets("Main").Activate
+    
+'End If
+Next
+
+Application.CutCopyMode = False
+
+Worksheets("Main").Cells(1, 1).Select
+
+MsgBox ("Completed")
+
+End Function
+Function copyRowData(varItem As String)
+
+    Worksheets(varItem).Activate
+    totalrows2 = Worksheets(varItem).Cells(Rows.Count, 1).End(xlUp).Row
+    Worksheets(varItem).Cells(totalrows2 + 1, 1).Select
+    Worksheets(varItem).Paste
+
+End Function
+Function createDictionary() As Object
+   
+    Dim subLineProducts As Object
+   
+   Set subLineProducts = CreateObject("scripting.dictionary")
+   
+   'subLineProducts.Add "key 1", Array("item1", "item2")
+   'subLineProducts.Add "key 2", "ItemX"
+   'subLineProducts.Add "2paintonly", Array("item1", "Drop Ship")
+   ' subLineProducts.Add "2paintonly", Array("Drop Ship", "", "")
+   ' subLineProducts.Add "BLANK", Array("DROP SHIP", "", "")
+   'subLineProducts.Add "Key 4", Array("Drop Ship")
+   subLineProducts.Add UCase("2paintonly"), Array("Drop Ship", "", "")
+   subLineProducts.Add UCase("BLANK"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Cfs rubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-mesh-17.5"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Cfs-mesh-22"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Cfs-mesh-Xxx"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Cfsrubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-17.5"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-22"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-24x25'"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-24x25ft"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfsrubber-36 x Xxx"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-Carpt-Xxx"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-rubber-Xxx"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfsrubber-Xxx x Xxx"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Cfs-vinyl-17.5"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Cfs-vinyl-22"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Cfs-vinyl-Xxx"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Cpt-previo"), Array("MISC", "", "")
+   subLineProducts.Add UCase("Cstmpmarsi"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Equiptampe"), Array("CARTS", "", "")
+   subLineProducts.Add UCase("Foilbacked"), Array("Drop Ship", "", "")
+   subLineProducts.Add UCase("Franmar"), Array("Drop Ship", "", "")
+   subLineProducts.Add UCase("Fscustom"), Array("MISC", "", "")
+   subLineProducts.Add UCase("fshield-13x9.5-cov"), Array("Faceshields", "", "")
+   subLineProducts.Add UCase("fsholder-vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsidentkit-rubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsidentkit"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-letter-3"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-mesh"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-17"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-17.5"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-18"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-18x12"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-21"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-22"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-25x25"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-44"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-mesh-8x18"), Array("MESH", "", "")
+   subLineProducts.Add UCase("Fsig-rubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-12"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("fsig-rubber-13-cov"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-14.25x7.25"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-16"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-17"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-17.5"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-17.5-cov"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-18"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-18x21"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-18x41"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-22"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-24"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-25x25"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-28"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-30"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-32"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-36"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-4"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-42"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-44"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-48"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-rubber-55x58"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-12x18"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("fsig-vinyl-13-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-14.25x7.25"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-16"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-17"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-17.5"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("fsig-vinyl-17.5-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-18"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-18x21"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-18x41"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-22"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-24"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-24.5x12"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-25x25"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-30x15.2"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-32"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-32x10"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-36"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-36x4"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-4"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-44"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-48"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-48x4"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsig-vinyl-55x58"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Fsrubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsrubber-18"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Fsvinyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Glowndarkf"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Inep-citad"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Inep-nsp"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("insitesign-10x14-alum"), Array("SIGNS- ALUM", "", "")
+   subLineProducts.Add UCase("insitesign-18x12-alum"), Array("SIGNS- ALUM", "", "")
+   subLineProducts.Add UCase("insitesign-24x24-alum"), Array("SIGNS- ALUM", "", "")
+   subLineProducts.Add UCase("insitesign-30x24-alum"), Array("SIGNS- ALUM", "", "")
+   subLineProducts.Add UCase("insitesign-40x30-pvc"), Array("SIGNS- PVC", "", "")
+   subLineProducts.Add UCase("insitesign-60x40-pvc"), Array("SIGNS- PVC", "", "")
+   subLineProducts.Add UCase("insitesign-spec-corr"), Array("SIGNS- CORR", "", "")
+   subLineProducts.Add UCase("insitesign-spec-pvc"), Array("SIGNS- PVC", "", "")
+   subLineProducts.Add UCase("Jeartcharg"), Array("MISC", "", "")
+   subLineProducts.Add UCase("Jedot"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jefeet"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jelabel"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("JeLmarker"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jeloca"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jemag"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("JeminiL"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("JeminiT"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jeoval"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jeovalprin"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jerectangl"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jesign"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jesquare"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("JeTmarker"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Jetriangle"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("JeXmarker"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Kaizen"), Array("CARTS", "", "")
+   subLineProducts.Add UCase("Label-safe"), Array("Label", "", "")
+   subLineProducts.Add UCase("Labl-ghs"), Array("Label", "", "")
+   subLineProducts.Add UCase("Lmark-rolls-2x90"), Array("Last Mark", "", "")
+   subLineProducts.Add UCase("Lmark-rolls-4x90"), Array("Last Mark", "", "")
+   subLineProducts.Add UCase("Lmarmaster"), Array("Last Mark", "", "")
+   subLineProducts.Add UCase("lpcircles"), Array("Low Profile", "", "")
+   subLineProducts.Add UCase("Merge"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Proj"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("psig-13-cov"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("psig-17.5-cov"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("psig-36x18-cov"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Pvtfloor"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rdtape200g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rdtape280g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rdtape300g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rdtape400g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rdtapeprmr"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-adhes"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-ao"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-cente"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-ceram"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-chips"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-plast"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-snowp"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Refl-solar"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Remov45mil"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Removprmr"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Roadtape3M"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Roadtapecu"), Array("", "", "")
+   subLineProducts.Add UCase("Ruler-cent"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-dial"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-frac"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-half"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-incm"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-metr"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-othe"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-prot"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-roll"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Ruler-staf"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Rumblestri"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Sm-3pc-arrow-2"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-3pc-arrow-2-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-3pc-arrow-4"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-3pc-arrow-4-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-arrow-4x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-arrow-4x10-glo"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-arrow-carpet-4x10"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("sm-arrw-4x12-cov"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("sm-arrw-carpet-4-cov"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-bdr-36x36"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-bdr-3pc-2"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-bdr-3pc-2-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-bdr-3pc-4"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-bdr-3pc-4-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-bdr-3pc-4xXxx"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-box-2xXxx"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-box-4pc2"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-box-4pc2-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-box-4pc4"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-box-4pc4-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-dash-2x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dash-2x24"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dash-2x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dash-4x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dash-4x18"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dash-cold-4x6"), Array("Freezer", "Clicker", "")
+   subLineProducts.Add UCase("Sm-dot-3.5"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-dot-3.5-Carpet"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-egress-2-36X50"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-egress-2-36X50-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-egress-4-36x50"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-egress-4-36x50-V"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-egress-4-36x50-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-2x36x36"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-2x36x36-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-2x42x42"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-2x42x42Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-2x48x48"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-2x48x48-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-4x36"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-4x36-SL"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-4x36-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-4x42"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-4x42-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-4x48"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-4x48-SL"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-exit-4x48-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-exit-glo-2x36x36"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smfm-cir-carpet"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-ftpt-carpet-3.5-glo"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-ftpt-carpet-3.5x10"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-Ftpt-stampd-3.5x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("sm-kit-3pc-vyl-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-kit-4pc-2"), Array("SOLID", "CLICKER", "RUBBER")
+   subLineProducts.Add UCase("Sm-kit-4pc-2-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Sm-labels-2x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-2x100"), Array("", "", "")
+   subLineProducts.Add UCase("Sm-labels-2x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-2x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-4x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-4x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-4x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-4x8"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-6x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-6x100"), Array("SOLID", "", "")
+   subLineProducts.Add UCase("Sm-labels-6x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-labels-6x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Lmarker-2x6x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Lmarker-4x8x8"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Lmarker-4x8x8-carpet"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-Lmarker-cold-2x6"), Array("Freezer", "Clicker", "")
+   subLineProducts.Add UCase("Sm-Lmarker-cold-4x8"), Array("Freezer", "Clicker", "")
+   subLineProducts.Add UCase("Sm-msg-roll-6x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("smpt-2x6ft-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-3pc-arrow-2"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-3pc-arrow-4"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-4x12-carpet-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt-4x12-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-4x18-carpet-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt-4x18-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-4x24-carpet-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt-4x24-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-4x4-carpet-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt-4x4-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-4x4-vyl-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("smpt-4x6ft-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-arrow-2x41.5-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-arrow-4x10"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-arrow-4x10-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-arrow-4x24-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-arrow-4x41.5-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-bdr-3pc-2"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-bdr-3pc-2xXxx"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-bdr-3pc-4"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-bdr-3pc-4xXxx"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-box-2xXxx-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-box-4pc2"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-box-4pc2-Vyl"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("Smpt-box-4pc4"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-box-4xXxx-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-carpet-4x100-cpt"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Smpt-dash-2x6"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dash-4x10"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dash-4x10-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dash-4x18"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dash-4x24"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dash-4x8-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-dot-3.5"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-egress-2-36X50"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-egress-4-36x50"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-ftpt-3.5x10-carp-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt-ftpt-3.5x10-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-ftpt-carpet-3.5-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Smpt-ftpt-carpet-3.5x10"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Smpt-ftpt-carpet-cpt"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Smpt-ftpt-rctngl-4x10"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-ftpt-rctngl-4x10-glo"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Ftpt-stampd-3.5x10-glo"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Lmarker-2x6-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Lmarker-2x6x6"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Lmarker-4x8-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Lmarker-4x8x8"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-markers-4x24-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-markers-5 cir-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("smpt-markers-6-tri-cov"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-2x100-cpt"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-2x32-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-2x50"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-2xXxx"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-4x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-4x100-cpt"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-4x32-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-4x50"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-6x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-carpet-2x100"), Array("PRINTED", "CARPET", "")
+   subLineProducts.Add UCase("Smpt-roll-carpet-4x100"), Array("PRINTED", "CARPET", "")
+   subLineProducts.Add UCase("Smpt-roll-glo-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-glo-4x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-rollmsg-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-msg-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-roll-msg-2x15"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-msg-2x25"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-roll-msg-4x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Smpt-Tmarker-2x10-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Tmarker-2x10x6"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Tmarker-4x12-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Tmarker-4x8x12"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Xmarker-2x10"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Xmarker-2x10-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Xmarker-4x12"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Smpt-Xmarker-4x12-cpt"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-roll-2x100"), Array("SOLID", "", "")
+   subLineProducts.Add UCase("Sm-roll-2x50"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-roll-3x100"), Array("SOLID", "", "")
+   subLineProducts.Add UCase("Sm-roll-4x100"), Array("SOLID", "", "")
+   subLineProducts.Add UCase("Sm-roll-4x33"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-roll-4x50"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-roll-4xXXX"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-roll-6x100"), Array("SOLID", "", "")
+   subLineProducts.Add UCase("Sm-roll-carpet-2x100"), Array("SOLID", "CARPET", "")
+   subLineProducts.Add UCase("Sm-roll-carpet-4x100"), Array("SOLID", "CARPET", "")
+   subLineProducts.Add UCase("Sm-roll-cold-2x100"), Array("Freezer", "", "")
+   subLineProducts.Add UCase("Sm-roll-cold-4x100"), Array("Freezer", "", "")
+   subLineProducts.Add UCase("Sm-roll-glo-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Sm-roll-glo-4x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Sm-roll-msg-2x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Sm-roll-msg-4x100"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Sm-roll-msg-4x25"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("sm-roll-msg-4x96-cov"), Array("PRINTED", "", "")
+   subLineProducts.Add UCase("Sm-Tmarker-2x10x6"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Tmarker-2x10x6-cold"), Array("Freezer", "Clicker", "")
+   subLineProducts.Add UCase("Sm-Tmarker-4x8x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Tmarker-4x8x12-cold"), Array("Freezer", "Clicker", "")
+   subLineProducts.Add UCase("Sm-Xmarker-2x10"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Xmarker-2x10-carpet"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Sm-Xmarker-4x12"), Array("SOLID", "CLICKER", "")
+   subLineProducts.Add UCase("Sm-Xmarker-4x12-carpet"), Array("SOLID", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Specialty"), Array("PRINTED", "CLICKER", "")
+   subLineProducts.Add UCase("spl"), Array("", "", "")
+   subLineProducts.Add UCase("Sten-baske"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-cone"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-custo"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-floor"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-footb"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-highw"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-inter"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-lette"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-lock"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-mylar"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-parki"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-playg"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-pool"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-retai"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-sidew"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-state"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-track"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("Sten-wordi"), Array("STENCIL", "", "")
+   subLineProducts.Add UCase("STG-rubber"), Array("RUBBER", "", "")
+   subLineProducts.Add UCase("Symbol200g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Symbol300g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Symbol400g"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("Virtsigns"), Array("DROP SHIP", "", "")
+   subLineProducts.Add UCase("vylmarkers-3x24-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("vylmarkers-cov"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("wall-post-10x14(5)-cov"), Array("POSTER", "", "")
+   subLineProducts.Add UCase("wall-post-10x14-cov"), Array("POSTER", "", "")
+   subLineProducts.Add UCase("wall-post-18x24-cov"), Array("POSTER", "", "")
+   subLineProducts.Add UCase("wall-vyl-10x14-cov"), Array("NO LAMINATE", "", "")
+   subLineProducts.Add UCase("wall-vyl-18x24-cov"), Array("NO LAMINATE", "", "")
+   subLineProducts.Add UCase("wall-vyl-18x9-Cov"), Array("NO LAMINATE", "", "")
+   
+   'Smpt-kit-4pc-2
+   '"smpt-arrw-2x41.5-carp-cov"
+   'Cfs-vinyl-13.0
+   'samples
+   
+
+   subLineProducts.Add UCase("samples"), Array("SAMPLE", "", "")
+   subLineProducts.Add UCase("Cfs-vinyl-13.0"), Array("VINYL", "", "")
+   subLineProducts.Add UCase("smpt-arrw-2x41.5-carp-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("Smpt-kit-4pc-2"), Array("PRINTED", "CLICKER", "RUBBER")
+   subLineProducts.Add UCase("Samples -catalog"), Array("SAMPLE", "", "")
+   subLineProducts.Add UCase("Samples -EM - tape"), Array("SAMPLE", "", "")
+   subLineProducts.Add UCase("Samples -EM - rfs"), Array("SAMPLE", "", "")
+   subLineProducts.Add UCase("Samples -custom"), Array("SAMPLE", "", "")
+   subLineProducts.Add UCase("smpt-arrw-4x41.5-carp-cov"), Array("PRINTED", "CLICKER", "CARPET")
+   subLineProducts.Add UCase("smpt -ftpt"), Array("PRINTED", "CLICKER", "")
+   
+   'Debug.Print subLineProducts.Item("key 1")(0)
+   'Debug.Print subLineProducts.Item("key 1")(1)
+   'Debug.Print subLineProducts.Item("2paintonly")(0)
+   'Debug.Print subLineProducts.Item("BLANK")(0)
+   
+   Set createDictionary = subLineProducts
+   
+End Function
+Function Sheet_Exists(WorkSheet_Name As String) As Boolean
+Dim Work_sheet As Worksheet
+
+Sheet_Exists = False
+
+For Each Work_sheet In Worksheets
+
+   If Work_sheet.Name = WorkSheet_Name Then
+       Sheet_Exists = True
+   End If
+
+Next
+
+End Function
+
+
